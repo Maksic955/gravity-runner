@@ -1,65 +1,118 @@
-type Props = { x: number; y: number; w: number; h: number; variant: number };
+type Props = {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+};
 
-export default function ObstacleBlock({ x, y, w, h, variant }: Props) {
-  const styles = getVariantStyle(variant);
+export default function ObstacleBlock({ x, y, w, h }: Props) {
+  const isBeam = h <= 26 || w >= 140;
+
+  const base = isBeam ? beamBaseStyle : slabBaseStyle;
 
   return (
     <div
       style={{
         position: 'absolute',
-        transform: `translate(${x}px, ${y}px)`,
+        left: x,
+        top: y,
         width: w,
         height: h,
-        background: styles.background,
-        borderRadius: styles.borderRadius,
-        opacity: 0.9,
-        border: styles.border,
-        boxShadow: styles.boxShadow,
+        borderRadius: isBeam ? 10 : 14,
+        ...base,
+        pointerEvents: 'none',
+        transform: 'translateZ(0)',
+        willChange: 'transform',
       }}
-    />
+    >
+      {/* edge highlight */}
+      <div style={edgeStyle(isBeam)} />
+
+      {/* inner gloss */}
+      <div style={glossStyle(isBeam)} />
+
+      {/* tiny noise (CSS-only, subtelne) */}
+      <div style={noiseStyle} />
+
+      {isBeam && <div style={shimmerStyle} />}
+    </div>
   );
 }
 
-function getVariantStyle(variant: number) {
-  switch (variant) {
-    case 0:
-      // red block
-      return {
-        background: 'linear-gradient(135deg, #d44 0%, #a33 100%)',
-        borderRadius: 8,
-        border: '2px solid #822',
-        boxShadow: '0 4px 8px rgba(221, 68, 68, 0.4)',
-      };
-    case 1:
-      // dark purple sharp block
-      return {
-        background: 'linear-gradient(135deg, #8b3a8b 0%, #5c1a5c 100%)',
-        borderRadius: 4,
-        border: '2px solid #3d0d3d',
-        boxShadow: '0 4px 8px rgba(139, 58, 139, 0.5)',
-      };
-    case 2:
-      // orange block
-      return {
-        background: 'linear-gradient(135deg, #ff6b35 0%, #d44915 100%)',
-        borderRadius: 12,
-        border: '2px solid #a33510',
-        boxShadow: '0 4px 8px rgba(255, 107, 53, 0.4)',
-      };
-    case 3:
-      // dark metallic
-      return {
-        background: 'linear-gradient(135deg, #555 0%, #333 100%)',
-        borderRadius: 6,
-        border: '2px solid #222',
-        boxShadow: '0 4px 8px rgba(85, 85, 85, 0.5), inset 0 2px 4px rgba(255,255,255,0.1)',
-      };
-    default:
-      return {
-        background: '#d44',
-        borderRadius: 8,
-        border: 'none',
-        boxShadow: 'none',
-      };
-  }
+const beamBaseStyle: React.CSSProperties = {
+  background:
+    'linear-gradient(180deg, rgba(190,120,255,0.45), rgba(120,70,190,0.25))',
+  border: '1px solid rgba(255,255,255,0.14)',
+  boxShadow:
+    '0 10px 24px rgba(0,0,0,0.35), 0 0 18px rgba(180,120,255,0.25)',
+};
+
+const slabBaseStyle: React.CSSProperties = {
+  background:
+    'linear-gradient(180deg, rgba(30,30,40,0.75), rgba(10,10,15,0.55))',
+  border: '1px solid rgba(255,255,255,0.10)',
+  boxShadow:
+    '0 18px 40px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.06)',
+};
+
+function edgeStyle(isBeam: boolean): React.CSSProperties {
+  return {
+    position: 'absolute',
+    inset: 0,
+    borderRadius: isBeam ? 10 : 14,
+    pointerEvents: 'none',
+    background: isBeam
+      ? 'linear-gradient(90deg, rgba(255,255,255,0.22), rgba(255,255,255,0.06), rgba(255,255,255,0.18))'
+      : 'linear-gradient(180deg, rgba(255,255,255,0.18), rgba(255,255,255,0.02))',
+    maskImage: 'linear-gradient(#000, #000)',
+    opacity: 0.9,
+    mixBlendMode: 'screen',
+  };
 }
+
+function glossStyle(isBeam: boolean): React.CSSProperties {
+  return {
+    position: 'absolute',
+    left: 6,
+    right: 6,
+    top: 5,
+    height: Math.max(8, isBeam ? 10 : 14),
+    borderRadius: 999,
+    pointerEvents: 'none',
+    background:
+      'linear-gradient(180deg, rgba(255,255,255,0.18), rgba(255,255,255,0.00))',
+    opacity: isBeam ? 0.55 : 0.35,
+    filter: 'blur(0.2px)',
+  };
+}
+
+const noiseStyle: React.CSSProperties = {
+  position: 'absolute',
+  inset: 0,
+  borderRadius: 14,
+  pointerEvents: 'none',
+  opacity: 0.08,
+  backgroundImage:
+    'radial-gradient(rgba(255,255,255,0.35) 1px, transparent 1px)',
+  backgroundSize: '10px 10px',
+  mixBlendMode: 'overlay',
+};
+
+const shimmerStyle: React.CSSProperties = {
+  position: 'absolute',
+  inset: -2,
+  borderRadius: 12,
+  pointerEvents: 'none',
+  background:
+    'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)',
+  opacity: 0.35,
+  filter: 'blur(2px)',
+  animation: 'shimmer 1.6s linear infinite',
+};
+
+<style jsx>{`
+  @keyframes shimmer {
+    from { transform: translateX(-120%); }
+    to { transform: translateX(120%); }
+  }
+`}</style>
