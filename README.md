@@ -1,36 +1,123 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🎮 Gravity Runner
 
-## Getting Started
+![Version](https://img.shields.io/badge/version-1.0.0-blue) ![Status](https://img.shields.io/badge/status-active-success) ![License](https://img.shields.io/badge/license-MIT-green)
 
-First, run the development server:
+**Gravity Runner** is a browser-based arcade endless runner where the player controls a character moving between the ceiling and the floor by manipulating gravity.
+
+> **💡 Note:** This project was created as part of a **frontend portfolio**, focusing heavily on application architecture, clean "vanilla" logic within React, "game feel", and UI aesthetics.
+
+---
+
+## 📸 Demo / Preview
+
+*(Place a screenshot or a GIF here. Example: `![Gameplay](./public/gameplay.gif)`)*
+./public/Start.png
+./public/Gra.png
+---
+
+## 🕹️ Game Mechanics
+
+The gameplay is based on simple yet reflex-demanding rules:
+
+* 🏃 **Auto-run:** The character moves automatically to the right (the world scrolls to the left).
+* 🧲 **Gravity:** The player does not jump in the classic sense — instead, they **invert the gravity vector**.
+* 💀 **Collisions:** Contact with any obstacle ends the game immediately.
+* 🪙 **Score:** Collecting coins increases the score counter.
+
+### Controls
+
+| Key | Action |
+| :---: | :--- |
+| **`SPACE`** | Switches gravity (up ↔ down). Can also be used mid-air. |
+
+---
+
+## ✨ Key Features
+
+* 🎯 **Custom Physics:** Physics engine based 100% on `requestAnimationFrame`, built from scratch.
+* 🌌 **Reactive Background:** Animated background that reacts to the game speed.
+* 💥 **Game Feel:** Implemented *micro-shake* and *screen flash* on collision for better feedback.
+* 💜 **Design:** Neon, minimalist graphic style.
+* 🧩 **Modularity:** Component-based UI architecture.
+* ⌨️ **Accessibility:** Full keyboard support.
+
+---
+
+## 🛠️ Tech Stack
+
+The project was built using a modern frontend stack:
+
+* ![React](https://img.shields.io/badge/React-20232A?style=flat&logo=react&logoColor=61DAFB)
+* ![Next.js](https://img.shields.io/badge/Next.js-black?style=flat&logo=next.js&logoColor=white) **(App Router)**
+* ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat&logo=typescript&logoColor=white)
+* ![CSS Modules](https://img.shields.io/badge/CSS_Modules-000000?style=flat&logo=css3&logoColor=white)
+
+🛑 **No external game engines** (like Phaser or PixiJS) were used. The entire game loop, logic, and rendering were written manually to demonstrate programming skills.
+
+---
+
+## 🧱 Architecture
+
+The business logic is completely separated from the presentation layer (UI).
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+src/
+├── app/                  # Routing (Next.js App Router)
+├── components/
+│   └── Game/             # Game UI (Player, HUD, Obstacles, Overlays)
+├── hooks/
+│   └── useGame.ts        # 🧠 The Brain (Central Logic)
+├── styles/               # Global and modular styles
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### `useGame.ts`
+This is the central custom hook that manages the entire application state:
+* State Machine (MENU / RUNNING / PAUSED / GAME_OVER).
+* Handling the **Game Loop**.
+* Calculating physics and player position.
+* **Collision Detection** (AABB).
+* Generating obstacles and coins.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## ▶️ Getting Started
 
-## Learn More
+To run the project locally:
 
-To learn more about Next.js, take a look at the following resources:
+1.  **Clone the repository:**
+    ```bash
+    git clone [https://github.com/your-username/gravity-runner.git](https://github.com/your-username/gravity-runner.git)
+    cd gravity-runner
+    ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2.  **Install dependencies:**
+    ```bash
+    npm install
+    # or
+    yarn install
+    ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+3.  **Run the development server:**
+    ```bash
+    npm run dev
+    ```
 
-## Deploy on Vercel
+4.  **Open in browser:**
+    👉 `http://localhost:3000`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📌 Status & Roadmap
+
+The project is actively being developed. Planned features include:
+
+- [ ] 🪙 Coin collection animations (particle effects).
+- [ ] 🔊 Sound effects (jump, collision, background music).
+- [ ] 🎬 Smooth transitions between states (MENU → GAME).
+- [ ] ⚖️ Difficulty balancing (progressive speed increase).
+
+---
+
+## 👤 Author
+
+Project created by **Maksymilian Sokalski**.
