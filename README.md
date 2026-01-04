@@ -10,8 +10,6 @@
 
 ## 📸 Demo / Preview
 
-## 📸 Demo / Preview
-
 ### Menu Główne
 ![Ekran Startowy](public/Start.png)
 
