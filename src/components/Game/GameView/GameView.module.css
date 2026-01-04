@@ -32,3 +32,68 @@
     filter: blur(0px);
   }
 }
+
+.hit {
+  animation: hitShake 220ms ease-in-out both;
+}
+
+@keyframes hitShake {
+  0% { transform: translateX(0) translateY(0); }
+  20% { transform: translateX(-6px) translateY(2px); }
+  40% { transform: translateX(7px) translateY(-2px); }
+  60% { transform: translateX(-5px) translateY(1px); }
+  80% { transform: translateX(4px) translateY(-1px); }
+  100% { transform: translateX(0) translateY(0); }
+}
+
+.flash {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5000;
+
+  background: radial-gradient(
+    circle at 50% 35%,
+    rgba(255, 255, 255, 0.34),
+    rgba(255, 255, 255, 0) 60%
+  );
+
+  animation: flashOut 220ms ease-out both;
+}
+
+@keyframes flashOut {
+  from { opacity: 0.9; }
+  to { opacity: 0; }
+}
+
+.railTop,
+.railBottom {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  pointer-events: none;
+  z-index: 1200;
+
+  background: linear-gradient(
+    90deg,
+    rgba(255, 120, 235, 0),
+    rgba(255, 120, 235, 0.55),
+    rgba(120, 80, 255, 0.35),
+    rgba(255, 120, 235, 0)
+  );
+
+  box-shadow:
+    0 0 14px rgba(255, 120, 235, 0.22),
+    0 0 22px rgba(120, 80, 255, 0.16);
+
+  opacity: 0.85;
+}
+
+.railTop {
+  top: 0;
+}
+
+.railBottom {
+  bottom: 0;
+}

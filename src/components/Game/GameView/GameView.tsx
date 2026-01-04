@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useGame } from '@/hooks/useGame';
 import styles from './GameView.module.css';
 import StartOverlay from '@/components/Game/StartOverlay';
@@ -12,21 +12,38 @@ import CoinBlock from '@/components/Game/CoinBlock';
 import Background from '@/components/Game/Background';
 
 export default function GameView() {
-  const { 
-    phase, 
-    start, 
-    restart, 
-    togglePause, 
-    onSpace, 
-    player, 
-    obstacles, 
+  const {
+    phase,
+    start,
+    restart,
+    togglePause,
+    onSpace,
+    player,
+    obstacles,
     coins,
-    distance, 
+    distance,
     coinsCollected,
-    direction 
+    direction,
   } = useGame();
 
   const stageRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (phase !== 'GAME_OVER') return;
+
+    const el = stageRef.current;
+    if (!el) return;
+
+    el.classList.remove(styles.hit);
+    void el.offsetWidth;
+    el.classList.add(styles.hit);
+
+    const t = setTimeout(() => {
+      el.classList.remove(styles.hit);
+    }, 220);
+
+    return () => clearTimeout(t);
+  }, [phase]);
 
   const handleStart = () => {
     start();
@@ -49,23 +66,27 @@ export default function GameView() {
           }
         }}
       >
-        {/* Animowane tło */}
+        {phase === 'GAME_OVER' && <div className={styles.flash} />}
+
+        <div className={styles.railTop} />
+        <div className={styles.railBottom} />
+
         <Background speed={speedFactor} />
 
         {phase !== 'MENU' && (
-          <Hud 
-            phase={phase} 
-            distance={distance} 
+          <Hud
+            phase={phase}
+            distance={distance}
             coinsCollected={coinsCollected}
-            onTogglePause={togglePause} 
+            onTogglePause={togglePause}
           />
         )}
 
         {phase !== 'MENU' && (
-          <PlayerBlock 
-            x={player.x} 
-            y={player.y} 
-            w={player.w} 
+          <PlayerBlock
+            x={player.x}
+            y={player.y}
+            w={player.w}
             h={player.h}
             direction={direction}
           />
@@ -73,29 +94,15 @@ export default function GameView() {
 
         {phase !== 'MENU' &&
           obstacles.map((o) => (
-            <ObstacleBlock 
-              key={o.id} 
-              x={o.x} 
-              y={o.y} 
-              w={o.w} 
-              h={o.h}
-              variant={o.variant}
-            />
+            <ObstacleBlock key={o.id} x={o.x} y={o.y} w={o.w} h={o.h} />
           ))}
 
         {phase !== 'MENU' &&
           coins.map((c) => (
-            <CoinBlock 
-              key={c.id} 
-              x={c.x} 
-              y={c.y} 
-              w={c.w} 
-              h={c.h}
-            />
+            <CoinBlock key={c.id} x={c.x} y={c.y} w={c.w} h={c.h} />
           ))}
 
         {phase === 'MENU' && <StartOverlay onStart={handleStart} />}
-
         {phase === 'GAME_OVER' && <GameOverOverlay onRestart={restart} />}
       </div>
     </div>
