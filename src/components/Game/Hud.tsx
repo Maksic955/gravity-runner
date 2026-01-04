@@ -9,67 +9,29 @@ type Props = {
 
 export default function Hud({ phase, distance, coinsCollected, onTogglePause }: Props) {
   const isPaused = phase === 'PAUSED';
+  const canPause = phase === 'RUNNING';
+  const canPlay = isPaused;
 
   return (
     <>
-      {/* Licznik dystansu - lewa strona u góry */}
-      <div
-        style={{
-          position: 'absolute',
-          top: 16,
-          left: '50%',
-          transform: 'translateX(-50%)',
-          display: 'flex',
-          gap: 16,
-          alignItems: 'center',
-          zIndex: 1000,
-        }}
-      >
-        {/* Dystans */}
-        <div
-          style={{
-            padding: '8px 20px',
-            borderRadius: 20,
-            border: '1px solid #333',
-            background: '#0d0d0d',
-            color: '#fff',
-            fontSize: 18,
-            fontWeight: 700,
-            fontFamily: 'monospace',
-            letterSpacing: '0.05em',
-          }}
-        >
-          {distance}m
+      {/* Górny pasek (center) */}
+      <div style={topBarStyle}>
+        <div style={pillStyle}>
+          <span style={labelStyle}>DIST</span>
+          <span style={valueStyle}>{distance}m</span>
         </div>
 
-        {/* Monety */}
-        <div
-          style={{
-            padding: '8px 16px',
-            borderRadius: 20,
-            border: '1px solid #333',
-            background: '#0d0d0d',
-            color: '#ffd700',
-            fontSize: 18,
-            fontWeight: 700,
-            fontFamily: 'monospace',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 8,
-          }}
-        >
-          <span style={{ fontSize: 20 }}>💰</span>
-          {coinsCollected}
+        <div style={pillStyle}>
+          <span style={{ ...labelStyle, color: 'rgba(255,215,0,0.95)' }}>COIN</span>
+          <span style={{ ...valueStyle, color: '#ffd700' }}>{coinsCollected}</span>
         </div>
       </div>
 
       {/* Lewy-górny: Play */}
       <button
         aria-label="Play"
-        onClick={() => {
-          if (isPaused) onTogglePause();
-        }}
-        style={circleBtnStyle({ top: 16, left: 16, disabled: !isPaused })}
+        onClick={() => canPlay && onTogglePause()}
+        style={circleBtnStyle({ top: 16, left: 16, disabled: !canPlay })}
       >
         ▶
       </button>
@@ -77,16 +39,67 @@ export default function Hud({ phase, distance, coinsCollected, onTogglePause }: 
       {/* Prawy-górny: Pause */}
       <button
         aria-label="Pause"
-        onClick={() => {
-          if (!isPaused && phase === 'RUNNING') onTogglePause();
-        }}
-        style={circleBtnStyle({ top: 16, right: 16, disabled: phase !== 'RUNNING' })}
+        onClick={() => canPause && onTogglePause()}
+        style={circleBtnStyle({ top: 16, right: 16, disabled: !canPause })}
       >
         ❚❚
       </button>
+
+      <style jsx>{`
+        button:hover {
+          transform: translateY(-1px);
+          filter: brightness(1.08);
+        }
+        button:active {
+          transform: translateY(0px) scale(0.98);
+        }
+      `}</style>
     </>
   );
 }
+
+const topBarStyle: React.CSSProperties = {
+  position: 'absolute',
+  top: 16,
+  left: '50%',
+  transform: 'translateX(-50%)',
+  display: 'flex',
+  gap: 12,
+  alignItems: 'center',
+  zIndex: 1000,
+  padding: '6px 8px',
+  borderRadius: 999,
+  border: '1px solid rgba(255,255,255,0.10)',
+  background: 'rgba(10,10,20,0.45)',
+  backdropFilter: 'blur(10px)',
+  boxShadow: '0 10px 30px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.06)',
+};
+
+const pillStyle: React.CSSProperties = {
+  display: 'flex',
+  alignItems: 'baseline',
+  gap: 8,
+  padding: '8px 14px',
+  borderRadius: 999,
+  border: '1px solid rgba(255,255,255,0.08)',
+  background: 'rgba(0,0,0,0.25)',
+};
+
+const labelStyle: React.CSSProperties = {
+  fontSize: 11,
+  letterSpacing: '0.18em',
+  opacity: 0.85,
+  color: 'rgba(255,255,255,0.75)',
+  fontWeight: 800,
+};
+
+const valueStyle: React.CSSProperties = {
+  fontSize: 18,
+  fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+  fontWeight: 800,
+  color: '#fff',
+  letterSpacing: '0.02em',
+};
 
 function circleBtnStyle(opts: {
   top: number;
@@ -94,6 +107,8 @@ function circleBtnStyle(opts: {
   right?: number;
   disabled?: boolean;
 }): React.CSSProperties {
+  const disabled = !!opts.disabled;
+
   return {
     position: 'absolute',
     top: opts.top,
@@ -102,11 +117,15 @@ function circleBtnStyle(opts: {
     width: 44,
     height: 44,
     borderRadius: 999,
-    border: '1px solid #333',
-    background: opts.disabled ? '#0d0d0d' : '#111',
-    color: opts.disabled ? '#555' : '#fff',
-    cursor: opts.disabled ? 'not-allowed' : 'pointer',
-    opacity: opts.disabled ? 0.6 : 1,
+    border: '1px solid rgba(255,255,255,0.12)',
+    background: disabled ? 'rgba(0,0,0,0.25)' : 'rgba(0,0,0,0.45)',
+    color: disabled ? 'rgba(255,255,255,0.35)' : '#fff',
+    cursor: disabled ? 'not-allowed' : 'pointer',
+    opacity: disabled ? 0.55 : 1,
     zIndex: 1000,
+    backdropFilter: 'blur(10px)',
+    boxShadow: '0 10px 26px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.06)',
+    transition: 'transform 0.12s ease, filter 0.12s ease, opacity 0.12s ease',
+    userSelect: 'none',
   };
 }

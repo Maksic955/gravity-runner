@@ -38,7 +38,7 @@ export default function GameView() {
   return (
     <div className={styles.screen}>
       <div
-        className={styles.stage}
+        className={`${styles.stage} ${phase !== 'MENU' ? styles.stageEnter : ''}`}
         ref={stageRef}
         tabIndex={0}
         onPointerDown={() => stageRef.current?.focus()}
