@@ -10,9 +10,14 @@
 
 ## 📸 Demo / Preview
 
-*(Place a screenshot or a GIF here. Example: `![Gameplay](./public/gameplay.gif)`)*
-./public/Start.png
-./public/Gra.png
+## 📸 Demo / Preview
+
+### Menu Główne
+![Ekran Startowy](public/Start.png)
+
+### Rozgrywka
+![Rozgrywka w Gravity Runner](public/Gra.png)
+
 ---
 
 ## 🕹️ Game Mechanics
